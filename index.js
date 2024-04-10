@@ -5,12 +5,16 @@ const bodyparser = require("body-parser");
 const config = require("./config");
 
 const app = express();
+
+// middleware
 app.use(express.json());
 app.use(cors());
 app.use(bodyparser.json());
+/****************/
 
 var conString = config.urlConnection;
 var client = new Client(conString);
+
 client.connect(function (err) {
   if (err) {
     return console.error('Não foi possível conectar ao banco.', err);
@@ -23,6 +27,8 @@ client.connect(function (err) {
   });
 });
 
+
+// ROTAS
 app.get("/", (req, res) => {
   console.log("Response ok.");
   res.send("Ok – Servidor disponível.");
@@ -32,6 +38,8 @@ app.listen(config.port, () =>
   console.log("Servidor funcionando na porta " + config.port)
 );
 
+
+// GET USERS
 app.get("/usuarios", (req, res) => {
   try {
     client.query("SELECT * FROM Usuarios", function
@@ -47,6 +55,7 @@ app.get("/usuarios", (req, res) => {
   }
 });
 
+// GET USERS BY ID
 app.get("/usuarios/:id", (req, res) => {
   try {
     console.log("Rota: usuarios/" + req.params.id);
@@ -65,6 +74,7 @@ app.get("/usuarios/:id", (req, res) => {
   }
 });
 
+// DELETE USERS BY ID
 app.delete("/usuarios/:id", (req, res) => {
   try {
     console.log("Rota: delete/" + req.params.id);
@@ -87,6 +97,7 @@ app.delete("/usuarios/:id", (req, res) => {
   }
 });
 
+// POST USERS
 app.post("/usuarios", (req, res) => {
   try {
     console.log("Alguém enviou um post com os dados:", req.body);
@@ -108,6 +119,7 @@ app.post("/usuarios", (req, res) => {
   }
 });
 
+// UPDATE USERS
 app.put("/usuarios/:id", (req, res) => {
   try {
     console.log("Alguém enviou um update com os dados:", req.body);
