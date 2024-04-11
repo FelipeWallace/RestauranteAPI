@@ -182,4 +182,28 @@ app.post("/pagamentos", (req, res) => {
   }
 });
 
+// UPDATE PAGAMENTOS
+app.put("/pagamentos/:id", (req, res) => {
+  try {
+    console.log("Alguém enviou um update com os dados:", req.body);
+    const id = req.params.id;
+    const { data, quantidade } = req.body;
+    client.query(
+      "UPDATE pagamentos SET data=$1, quantidade=$2, WHERE id =$3 ",
+      [data, quantidade, id],
+      function (err, result) {
+        if (err) {
+          return console.error("Erro ao executar a qry de UPDATE", err);
+        } else {
+          res.setHeader("id", id);
+          res.status(202).json({ "identificador": id });
+          console.log(result);
+        }
+      }
+    );
+  } catch (erro) {
+    console.error(erro);
+  }
+});
+
 module.exports = app;
