@@ -160,4 +160,26 @@ app.get("/pagamentos", (req, res) => {
   }
 });
 
+// POST PAGAMENTOS
+app.post("/pagamentos", (req, res) => {
+  try {
+    console.log("Alguém enviou um post com os dados:", req.body);
+    const { data, quantidade } = req.body;
+    client.query(
+      "INSERT INTO pagamentos (data, quantidade) VALUES ($1, $2) RETURNING * ", [data, quantidade],
+      (err, result) => {
+        if (err) {
+          return console.error("Erro ao executar a qry de INSERT", err);
+        }
+        const { id } = result.rows[0];
+        res.setHeader("id", `${id}`);
+        res.status(201).json(result.rows[0]);
+        console.log(result);
+      }
+    );
+  } catch (erro) {
+    console.error(erro);
+  }
+});
+
 module.exports = app;
