@@ -142,5 +142,22 @@ app.put("/usuarios/:id", (req, res) => {
     console.error(erro);
   }
 });
+/***************************************************/
+
+// GET PAGAMENTOS
+app.get("/pagamentos", (req, res) => {
+  try {
+    client.query("SELECT * FROM pagamentos", function
+      (err, result) {
+      if (err) {
+        return console.error("Erro ao executar a qry de SELECT", err);
+      }
+      res.send(result.rows);
+      console.log("Rota: get pagamentos");
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 module.exports = app;
