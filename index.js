@@ -189,7 +189,7 @@ app.put("/pagamentos/:id", (req, res) => {
     const id = req.params.id;
     const { data, quantidade } = req.body;
     client.query(
-      "UPDATE pagamentos SET data=$1, quantidade=$2, WHERE id =$3 ",
+      "UPDATE pagamentos SET data=$1, quantidade=$2 WHERE id =$3 ",
       [data, quantidade, id],
       function (err, result) {
         if (err) {
