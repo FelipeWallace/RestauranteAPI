@@ -179,6 +179,29 @@ app.get("/pagamentos/:id", (req, res) => {
   }
 });
 
+// DELETE PAGAMENTOS BY ID
+app.delete("/pagamentos/:id", (req, res) => {
+  try {
+    console.log("Rota: delete/" + req.params.id);
+    client.query(
+      "DELETE FROM pagamentos WHERE id = $1", [req.params.id], (err, result) => {
+        if (err) {
+          return console.error("Erro ao executar a qry de DELETE", err);
+        } else {
+          if (result.rowCount == 0) {
+            res.status(404).json({ info: "Registro não encontrado." });
+          } else {
+            res.status(200).json({ info: `Registro excluído. Código: ${id}` });
+          }
+        }
+        console.log(result);
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 // CREATE (POST) PAGAMENTOS
 app.post("/pagamentos", (req, res) => {
   try {
