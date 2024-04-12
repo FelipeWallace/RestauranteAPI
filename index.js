@@ -39,7 +39,7 @@ app.listen(config.port, () =>
 );
 
 
-// GET USERS
+// READ (GET) USERS
 app.get("/usuarios", (req, res) => {
   try {
     client.query("SELECT * FROM Usuarios", function
@@ -55,7 +55,7 @@ app.get("/usuarios", (req, res) => {
   }
 });
 
-// GET USERS BY ID
+// READ (GET) USERS BY ID
 app.get("/usuarios/:id", (req, res) => {
   try {
     console.log("Rota: usuarios/" + req.params.id);
@@ -97,7 +97,7 @@ app.delete("/usuarios/:id", (req, res) => {
   }
 });
 
-// POST USERS
+// CREATE (POST) USERS
 app.post("/usuarios", (req, res) => {
   try {
     console.log("Alguém enviou um post com os dados:", req.body);
@@ -119,7 +119,7 @@ app.post("/usuarios", (req, res) => {
   }
 });
 
-// UPDATE USERS
+// UPDATE (PUT) USERS
 app.put("/usuarios/:id", (req, res) => {
   try {
     console.log("Alguém enviou um update com os dados:", req.body);
@@ -144,7 +144,7 @@ app.put("/usuarios/:id", (req, res) => {
 });
 /***************************************************/
 
-// GET PAGAMENTOS
+// READ (GET) PAGAMENTOS
 app.get("/pagamentos", (req, res) => {
   try {
     client.query("SELECT * FROM pagamentos", function
@@ -160,7 +160,26 @@ app.get("/pagamentos", (req, res) => {
   }
 });
 
-// POST PAGAMENTOS
+// READ (GET) PAGAMENTOS BY ID
+app.get("/pagametos/:id", (req, res) => {
+  try {
+    console.log("Rota: pagamentos/" + req.params.id);
+    client.query(
+      "SELECT * FROM pagamentos WHERE id = $1", [req.params.id],
+      (err, result) => {
+        if (err) {
+          return console.error("Erro ao executar a qry de SELECT id", err);
+        }
+        res.send(result.rows);
+        //console.log(result);
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+// CREATE (POST) PAGAMENTOS
 app.post("/pagamentos", (req, res) => {
   try {
     console.log("Alguém enviou um post com os dados:", req.body);
@@ -182,7 +201,7 @@ app.post("/pagamentos", (req, res) => {
   }
 });
 
-// UPDATE PAGAMENTOS
+// UPDATE (PUT) PAGAMENTOS
 app.put("/pagamentos/:id", (req, res) => {
   try {
     console.log("Alguém enviou um update com os dados:", req.body);
