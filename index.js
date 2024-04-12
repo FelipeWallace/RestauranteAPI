@@ -161,7 +161,7 @@ app.get("/pagamentos", (req, res) => {
 });
 
 // READ (GET) PAGAMENTOS BY ID
-app.get("/pagametos/:id", (req, res) => {
+app.get("/pagamentos/:id", (req, res) => {
   try {
     console.log("Rota: pagamentos/" + req.params.id);
     client.query(
