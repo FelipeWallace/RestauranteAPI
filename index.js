@@ -458,4 +458,109 @@ app.put("/avisos/:id", (req, res) => {
   }
 });
 /*******************************************/
+
+// READ (GET) ITEM
+app.get("/item", (req, res) => {
+  try {
+    client.query("SELECT * FROM item", function
+      (err, result) {
+      if (err) {
+        return console.error("Erro ao executar a qry de SELECT", err);
+      }
+      res.send(result.rows);
+      console.log("Rota: get item");
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+// READ (GET) ITEM BY ID
+app.get("/item/:id", (req, res) => {
+  try {
+    console.log("Rota: item/" + req.params.id);
+    client.query(
+      "SELECT * FROM item WHERE id = $1", [req.params.id],
+      (err, result) => {
+        if (err) {
+          return console.error("Erro ao executar a qry de SELECT id", err);
+        }
+        res.send(result.rows);
+        //console.log(result);
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+// DELETE ITEM BY ID
+app.delete("/item/:id", (req, res) => {
+  try {
+    console.log("Rota: delete/" + req.params.id);
+    client.query(
+      "DELETE FROM item WHERE id = $1", [req.params.id], (err, result) => {
+        if (err) {
+          return console.error("Erro ao executar a qry de DELETE", err);
+        } else {
+          if (result.rowCount == 0) {
+            res.status(404).json({ info: "Registro não encontrado." });
+          } else {
+            res.status(200).json({ info: `Registro excluído. Código: ${id}` });
+          }
+        }
+        console.log(result);
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+// CREATE (POST) ITEM
+app.post("/item", (req, res) => {
+  try {
+    console.log("Alguém enviou um post com os dados:", req.body);
+    const { nome, descricao, imagem_url, cardapio_id } = req.body;
+    client.query(
+      "INSERT INTO item (nome, descricao, imagem_url, cardapio_id) VALUES ($1, $2, $3, $4) RETURNING * ", [nome, descricao, imagem_url, cardapio_id],
+      (err, result) => {
+        if (err) {
+          return console.error("Erro ao executar a qry de INSERT", err);
+        }
+        const { id } = result.rows[0];
+        res.setHeader("id", `${id}`);
+        res.status(201).json(result.rows[0]);
+        console.log(result);
+      }
+    );
+  } catch (erro) {
+    console.error(erro);
+  }
+});
+
+// UPDATE (PUT) ITEM
+app.put("/item/:id", (req, res) => {
+  try {
+    console.log("Alguém enviou um update com os dados:", req.body);
+    const id = req.params.id;
+    const { nome, descricao, imagem_url, cardapio_id } = req.body;
+    client.query(
+      "UPDATE item SET nome=$1, descricao=$2, imagem_url=$3, cardapio_id=$4 WHERE id =$5 ",
+      [nome, descricao, imagem_url, cardapio_id, id],
+      function (err, result) {
+        if (err) {
+          return console.error("Erro ao executar a qry de UPDATE", err);
+        } else {
+          res.setHeader("id", id);
+          res.status(202).json({ "identificador": id });
+          console.log(result);
+        }
+      }
+    );
+  } catch (erro) {
+    console.error(erro);
+  }
+});
+/*******************************************/
 module.exports = app;
