@@ -353,4 +353,109 @@ app.put("/cardapio/:id", (req, res) => {
   }
 });
 /*******************************************/
+
+// READ (GET) AVISOS
+app.get("/avisos", (req, res) => {
+  try {
+    client.query("SELECT * FROM avisos", function
+      (err, result) {
+      if (err) {
+        return console.error("Erro ao executar a qry de SELECT", err);
+      }
+      res.send(result.rows);
+      console.log("Rota: get avisos");
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+// READ (GET) AVISOS BY ID
+app.get("/avisos/:id", (req, res) => {
+  try {
+    console.log("Rota: avisos/" + req.params.id);
+    client.query(
+      "SELECT * FROM avisos WHERE id = $1", [req.params.id],
+      (err, result) => {
+        if (err) {
+          return console.error("Erro ao executar a qry de SELECT id", err);
+        }
+        res.send(result.rows);
+        //console.log(result);
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+// DELETE AVISOS BY ID
+app.delete("/avisos/:id", (req, res) => {
+  try {
+    console.log("Rota: delete/" + req.params.id);
+    client.query(
+      "DELETE FROM avisos WHERE id = $1", [req.params.id], (err, result) => {
+        if (err) {
+          return console.error("Erro ao executar a qry de DELETE", err);
+        } else {
+          if (result.rowCount == 0) {
+            res.status(404).json({ info: "Registro não encontrado." });
+          } else {
+            res.status(200).json({ info: `Registro excluído. Código: ${id}` });
+          }
+        }
+        console.log(result);
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+// CREATE (POST) AVISOS
+app.post("/avisos", (req, res) => {
+  try {
+    console.log("Alguém enviou um post com os dados:", req.body);
+    const { data, hora, aviso, tipo } = req.body;
+    client.query(
+      "INSERT INTO avisos (data, hora, aviso, tipo) VALUES ($1, $2, $3, $4) RETURNING * ", [data, hora, aviso, tipo],
+      (err, result) => {
+        if (err) {
+          return console.error("Erro ao executar a qry de INSERT", err);
+        }
+        const { id } = result.rows[0];
+        res.setHeader("id", `${id}`);
+        res.status(201).json(result.rows[0]);
+        console.log(result);
+      }
+    );
+  } catch (erro) {
+    console.error(erro);
+  }
+});
+
+// UPDATE (PUT) AVISOS
+app.put("/avisos/:id", (req, res) => {
+  try {
+    console.log("Alguém enviou um update com os dados:", req.body);
+    const id = req.params.id;
+    const { data, hora, aviso, tipo } = req.body;
+    client.query(
+      "UPDATE avisos SET data=$1, hora=$2, aviso=$3, tipo=$4 WHERE id =$5 ",
+      [data, hora, aviso, tipo, id],
+      function (err, result) {
+        if (err) {
+          return console.error("Erro ao executar a qry de UPDATE", err);
+        } else {
+          res.setHeader("id", id);
+          res.status(202).json({ "identificador": id });
+          console.log(result);
+        }
+      }
+    );
+  } catch (erro) {
+    console.error(erro);
+  }
+});
+/*******************************************/
 module.exports = app;
