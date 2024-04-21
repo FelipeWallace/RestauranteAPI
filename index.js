@@ -247,5 +247,110 @@ app.put("/pagamentos/:id", (req, res) => {
     console.error(erro);
   }
 });
+/*******************************************/
 
+// READ (GET) CARDAPIO
+app.get("/cardapio", (req, res) => {
+  try {
+    client.query("SELECT * FROM cardapio", function
+      (err, result) {
+      if (err) {
+        return console.error("Erro ao executar a qry de SELECT", err);
+      }
+      res.send(result.rows);
+      console.log("Rota: get cardapio");
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+// READ (GET) CARDAPIO BY ID
+app.get("/cardapio/:id", (req, res) => {
+  try {
+    console.log("Rota: cardapio/" + req.params.id);
+    client.query(
+      "SELECT * FROM cardapio WHERE id = $1", [req.params.id],
+      (err, result) => {
+        if (err) {
+          return console.error("Erro ao executar a qry de SELECT id", err);
+        }
+        res.send(result.rows);
+        //console.log(result);
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+// DELETE CARDAPIO BY ID
+app.delete("/cardapio/:id", (req, res) => {
+  try {
+    console.log("Rota: delete/" + req.params.id);
+    client.query(
+      "DELETE FROM cardapio WHERE id = $1", [req.params.id], (err, result) => {
+        if (err) {
+          return console.error("Erro ao executar a qry de DELETE", err);
+        } else {
+          if (result.rowCount == 0) {
+            res.status(404).json({ info: "Registro não encontrado." });
+          } else {
+            res.status(200).json({ info: `Registro excluído. Código: ${id}` });
+          }
+        }
+        console.log(result);
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+// CREATE (POST) CARDAPIO
+app.post("/cardapio", (req, res) => {
+  try {
+    console.log("Alguém enviou um post com os dados:", req.body);
+    const { data, refeicao, titulo } = req.body;
+    client.query(
+      "INSERT INTO cardapio (data, refeicao, titulo) VALUES ($1, $2, $3) RETURNING * ", [data, refeicao, titulo],
+      (err, result) => {
+        if (err) {
+          return console.error("Erro ao executar a qry de INSERT", err);
+        }
+        const { id } = result.rows[0];
+        res.setHeader("id", `${id}`);
+        res.status(201).json(result.rows[0]);
+        console.log(result);
+      }
+    );
+  } catch (erro) {
+    console.error(erro);
+  }
+});
+
+// UPDATE (PUT) CARDAPIO
+app.put("/cardapio/:id", (req, res) => {
+  try {
+    console.log("Alguém enviou um update com os dados:", req.body);
+    const id = req.params.id;
+    const { data, refeicao, titulo } = req.body;
+    client.query(
+      "UPDATE cardapio SET data=$1, refeicao=$2, titulo=$3 WHERE id =$4 ",
+      [data, refeicao, titulo],
+      function (err, result) {
+        if (err) {
+          return console.error("Erro ao executar a qry de UPDATE", err);
+        } else {
+          res.setHeader("id", id);
+          res.status(202).json({ "identificador": id });
+          console.log(result);
+        }
+      }
+    );
+  } catch (erro) {
+    console.error(erro);
+  }
+});
+/*******************************************/
 module.exports = app;
