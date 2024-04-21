@@ -337,7 +337,7 @@ app.put("/cardapio/:id", (req, res) => {
     const { data, refeicao, titulo } = req.body;
     client.query(
       "UPDATE cardapio SET data=$1, refeicao=$2, titulo=$3 WHERE id =$4 ",
-      [data, refeicao, titulo],
+      [data, refeicao, titulo, id],
       function (err, result) {
         if (err) {
           return console.error("Erro ao executar a qry de UPDATE", err);
