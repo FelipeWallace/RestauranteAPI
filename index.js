@@ -416,9 +416,9 @@ app.delete("/avisos/:id", (req, res) => {
 app.post("/avisos", (req, res) => {
   try {
     console.log("Alguém enviou um post com os dados:", req.body);
-    const { data, hora, aviso, tipo } = req.body;
+    const { data, hora, aviso, tipo, usuarios_id } = req.body;
     client.query(
-      "INSERT INTO avisos (data, hora, aviso, tipo) VALUES ($1, $2, $3, $4) RETURNING * ", [data, hora, aviso, tipo],
+      "INSERT INTO avisos (data, hora, aviso, tipo, usuarios_id) VALUES ($1, $2, $3, $4, $5) RETURNING * ", [data, hora, aviso, tipo, usuarios_id],
       (err, result) => {
         if (err) {
           return console.error("Erro ao executar a qry de INSERT", err);
@@ -439,10 +439,10 @@ app.put("/avisos/:id", (req, res) => {
   try {
     console.log("Alguém enviou um update com os dados:", req.body);
     const id = req.params.id;
-    const { data, hora, aviso, tipo } = req.body;
+    const { data, hora, aviso, tipo, usuarios_id } = req.body;
     client.query(
-      "UPDATE avisos SET data=$1, hora=$2, aviso=$3, tipo=$4 WHERE id =$5 ",
-      [data, hora, aviso, tipo, id],
+      "UPDATE avisos SET data=$1, hora=$2, aviso=$3, tipo=$4, usuarios_id=$5 WHERE id =$6 ",
+      [data, hora, aviso, tipo, usuarios_id, id],
       function (err, result) {
         if (err) {
           return console.error("Erro ao executar a qry de UPDATE", err);
