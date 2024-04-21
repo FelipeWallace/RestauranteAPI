@@ -563,4 +563,110 @@ app.put("/item/:id", (req, res) => {
   }
 });
 /*******************************************/
+
+// READ (GET) AVALIACAO
+app.get("/avaliacao", (req, res) => {
+  try {
+    client.query("SELECT * FROM avaliacao", function
+      (err, result) {
+      if (err) {
+        return console.error("Erro ao executar a qry de SELECT", err);
+      }
+      res.send(result.rows);
+      console.log("Rota: get avaliacao");
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+// READ (GET) AVALIACAO BY ID
+app.get("/avaliacao/:id", (req, res) => {
+  try {
+    console.log("Rota: avaliacao/" + req.params.id);
+    client.query(
+      "SELECT * FROM avaliacao WHERE id = $1", [req.params.id],
+      (err, result) => {
+        if (err) {
+          return console.error("Erro ao executar a qry de SELECT id", err);
+        }
+        res.send(result.rows);
+        //console.log(result);
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+// DELETE AVALIACAO BY ID
+app.delete("/avaliacao/:id", (req, res) => {
+  try {
+    console.log("Rota: delete/" + req.params.id);
+    client.query(
+      "DELETE FROM avaliacao WHERE id = $1", [req.params.id], (err, result) => {
+        if (err) {
+          return console.error("Erro ao executar a qry de DELETE", err);
+        } else {
+          if (result.rowCount == 0) {
+            res.status(404).json({ info: "Registro não encontrado." });
+          } else {
+            res.status(200).json({ info: `Registro excluído. Código: ${id}` });
+          }
+        }
+        console.log(result);
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+// CREATE (POST) AVALIACAO
+app.post("/avaliacao", (req, res) => {
+  try {
+    console.log("Alguém enviou um post com os dados:", req.body);
+    const { comentario, data, usuarios_id, cardapio_id, pontuacao } = req.body;
+    client.query(
+      "INSERT INTO avaliacao (comentario, data, usuarios_id, cardapio_id, pontuacao) VALUES ($1, $2, $3, $4, $5) RETURNING * ", [comentario, data, usuarios_id, cardapio_id, pontuacao],
+      (err, result) => {
+        if (err) {
+          return console.error("Erro ao executar a qry de INSERT", err);
+        }
+        const { id } = result.rows[0];
+        res.setHeader("id", `${id}`);
+        res.status(201).json(result.rows[0]);
+        console.log(result);
+      }
+    );
+  } catch (erro) {
+    console.error(erro);
+  }
+});
+
+// UPDATE (PUT) AVALIACAO
+app.put("/avaliacao/:id", (req, res) => {
+  try {
+    console.log("Alguém enviou um update com os dados:", req.body);
+    const id = req.params.id;
+    const { comentario, data, usuarios_id, cardapio_id, pontuacao } = req.body;
+    client.query(
+      "UPDATE avaliacao SET comentario=$1, data=$2, usuarios_id=$3, cardapio_id=$4, pontuacao=$5 WHERE id =$6 ",
+      [comentario, data, usuarios_id, cardapio_id, pontuacao, id],
+      function (err, result) {
+        if (err) {
+          return console.error("Erro ao executar a qry de UPDATE", err);
+        } else {
+          res.setHeader("id", id);
+          res.status(202).json({ "identificador": id });
+          console.log(result);
+        }
+      }
+    );
+  } catch (erro) {
+    console.error(erro);
+  }
+});
+
+/*******************************************/
 module.exports = app;
