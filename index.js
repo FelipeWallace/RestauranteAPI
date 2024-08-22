@@ -93,6 +93,7 @@ app.delete("/usuarios/:id", (req, res) => {
       }
     );
   } catch (error) {
+    res.status(404).send("Erro: " + error);
     console.log(error);
   }
 });
