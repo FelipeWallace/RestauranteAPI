@@ -77,12 +77,10 @@ app.get("/usuarios/:id", (req, res) => {
 // DELETE USERS BY ID
 app.delete("/usuarios/:id", (req, res) => {
   try {
-    console.log("Rota: delete/" + req.params.id);
     client.query(
       "DELETE FROM Usuarios WHERE id = $1", [req.params.id], (err, result) => {
         if (err) {
-          res.status(404).send("Erro: " + err);
-          return console.error("Erro ao executar a qry de DELETE", err);
+          res.status(400).send("Erro: " + err);
         } else {
           if (result.rowCount == 0) {
             res.status(404).json({ info: "Registro não encontrado." });
@@ -90,12 +88,10 @@ app.delete("/usuarios/:id", (req, res) => {
             res.status(200).json({ info: "Registro excluído." });
           }
         }
-        console.log(result);
       }
     );
   } catch (error) {
     res.status(404).send("Erro: " + error);
-    console.log(error);
   }
 });
 
