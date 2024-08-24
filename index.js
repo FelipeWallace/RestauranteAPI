@@ -39,7 +39,7 @@ app.listen(config.port, () =>
 
 
 // READ (GET) USERS
-app.get("/usuarios", (res) => {
+app.get("/usuarios", (req, res) => {
   try {
     client.query("SELECT * FROM Usuarios", function
       (err, result) {
