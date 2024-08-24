@@ -30,7 +30,6 @@ client.connect(function (err) {
 
 // ROTAS
 app.get("/", (req, res) => {
-  console.log("Response ok.");
   res.send("Ok – Servidor disponível.");
 });
 
@@ -40,7 +39,7 @@ app.listen(config.port, () =>
 
 
 // READ (GET) USERS
-app.get("/usuarios", (req, res) => {
+app.get("/usuarios", (res) => {
   try {
     client.query("SELECT * FROM Usuarios", function
       (err, result) {
@@ -189,7 +188,7 @@ app.delete("/pagamentos/:id", (req, res) => {
           if (result.rowCount == 0) {
             res.status(404).json({ info: "Registro não encontrado." });
           } else {
-            res.status(200).json({ info: `Registro excluído. Código: ${id}` });
+            res.status(200).json({ info: `Registro excluído.` });
           }
         }
         console.log(result);
@@ -294,7 +293,7 @@ app.delete("/cardapio/:id", (req, res) => {
           if (result.rowCount == 0) {
             res.status(404).json({ info: "Registro não encontrado." });
           } else {
-            res.status(200).json({ info: `Registro excluído. Código: ${id}` });
+            res.status(200).json({ info: `Registro excluído.` });
           }
         }
         console.log(result);
@@ -399,7 +398,7 @@ app.delete("/avisos/:id", (req, res) => {
           if (result.rowCount == 0) {
             res.status(404).json({ info: "Registro não encontrado." });
           } else {
-            res.status(200).json({ info: `Registro excluído. Código: ${id}` });
+            res.status(200).json({ info: `Registro excluído.` });
           }
         }
         console.log(result);
@@ -504,7 +503,7 @@ app.delete("/item/:id", (req, res) => {
           if (result.rowCount == 0) {
             res.status(404).json({ info: "Registro não encontrado." });
           } else {
-            res.status(200).json({ info: `Registro excluído. Código: ${id}` });
+            res.status(200).json({ info: `Registro excluído.` });
           }
         }
         console.log(result);
@@ -609,7 +608,7 @@ app.delete("/avaliacao/:id", (req, res) => {
           if (result.rowCount == 0) {
             res.status(404).json({ info: "Registro não encontrado." });
           } else {
-            res.status(200).json({ info: `Registro excluído. Código: ${id}` });
+            res.status(200).json({ info: `Registro excluído.` });
           }
         }
         console.log(result);
